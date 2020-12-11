@@ -629,8 +629,8 @@ if test "$FC" != "" ; then
   SHMEM_FIND_FORTRAN_INT_TYPE([INTEGER], [$transport])
 
   # find C type corresponding to given Fortran types
-  OMPI_FIND_TYPE([INTEGER], [char,     short, int, long, long long])
-  OMPI_FIND_TYPE([DOUBLE PRECISION], [float, double, long double])
+  OPAL_FIND_TYPE([INTEGER], [char,     short, int, long, long long])
+  OPAL_FIND_TYPE([DOUBLE PRECISION], [float, double, long double])
 
   # Find kind values for 4 & 8 byte integer types in Fortran (used in
   # shmem.fh)
