@@ -2,7 +2,7 @@ dnl -*- shell-script -*-
 dnl
 dnl Copyright (c) 2016      Los Alamos National Security, LLC. All rights
 dnl                         reserved.
-dnl Copyright (c) 2016-2018 Cisco Systems, Inc.  All rights reserved
+dnl Copyright (c) 2016 Cisco Systems, Inc.  All rights reserved.
 dnl Copyright (c) 2016      Research Organization for Information Science
 dnl                         and Technology (RIST). All rights reserved.
 dnl $COPYRIGHT$
@@ -51,6 +51,12 @@ EOF
 
     dnl Print out the bindings if we are building OMPI
     if test "$project_ompi_amc" = "true" ; then
+	if test x$enable_mpi_cxx = xyes ; then
+            echo "Build MPI C++ bindings (deprecated): yes"
+	else
+            echo "Build MPI C++ bindings (deprecated): no"
+	fi
+
 	if test $OMPI_BUILD_FORTRAN_BINDINGS = $OMPI_FORTRAN_MPIFH_BINDINGS ; then
             echo "Build MPI Fortran bindings: mpif.h"
 	elif test $OMPI_BUILD_FORTRAN_BINDINGS = $OMPI_FORTRAN_USEMPI_BINDINGS ; then
@@ -61,19 +67,17 @@ EOF
 	    echo "Build MPI Fortran bindings: no"
 	fi
 
-        if test $WANT_MPI_JAVA_BINDINGS -eq 1 ; then
+        if test x$WANT_MPI_JAVA_SUPPORT = x1 ; then
             echo "Build MPI Java bindings (experimental): yes"
         else
-            echo "Build MPI Java bindings (experimental): no"
+            echo "MPI Build Java bindings (experimental): no"
         fi
     fi
 
     if test "$project_oshmem_amc" = "true" ; then
         echo "Build Open SHMEM support: yes"
-    elif test -z "$project_oshmem_amc" ; then
-        echo "Build Open SHMEM support: no"
     else
-	echo "Build Open SHMEM support: $project_oshmem_amc"
+        echo "Build Open SHMEM support: no"
     fi
 
     if test $WANT_DEBUG = 0 ; then

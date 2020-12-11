@@ -6,33 +6,31 @@ dnl                         Corporation.  All rights reserved.
 dnl Copyright (c) 2004-2005 The University of Tennessee and The University
 dnl                         of Tennessee Research Foundation.  All rights
 dnl                         reserved.
-dnl Copyright (c) 2004-2005 High Performance Computing Center Stuttgart,
+dnl Copyright (c) 2004-2005 High Performance Computing Center Stuttgart, 
 dnl                         University of Stuttgart.  All rights reserved.
 dnl Copyright (c) 2004-2005 The Regents of the University of California.
 dnl                         All rights reserved.
 dnl Copyright (c) 2010      Cisco Systems, Inc.  All rights reserved.
-dnl Copyright (c) 2014      Intel, Inc. All rights reserved.
 dnl $COPYRIGHT$
-dnl
+dnl 
 dnl Additional copyrights may follow
-dnl
+dnl 
 dnl $HEADER$
 dnl
 
-# OPAL_FIND_TYPE(type, [list of c types], abort if not found,
-#                target size, variable to set)
+# OMPI_FIND_TYPE(type, [list of c types])
 # -----------------------------------------------------------
-AC_DEFUN([OPAL_FIND_TYPE],[
-    AS_VAR_PUSHDEF([type_var], [opal_cv_find_type_$1])
-
-    oft_abort_on_fail="$3"
-    oft_target_size="$4"
+AC_DEFUN([OMPI_FIND_TYPE],[
+    AS_VAR_PUSHDEF([type_var], [ompi_cv_find_type_$1])
+    AS_VAR_PUSHDEF([size_var],
+       m4_translit([[ompi_cv_fortran_sizeof_$1]], [*], [p]))
 
     AC_CACHE_CHECK([for C type corresponding to $1], type_var,
         [ # Loop over all the types handed to us
+         oft_target_size=AS_VAR_GET(size_var)
          oft_real_type=
          AS_IF([test "$oft_target_size" != ""],
-             [m4_foreach(oft_type, [$2],
+             [m4_foreach(oft_type, [$2], 
                   [if test -z "$oft_real_type"; then
                        if test "[$ac_cv_sizeof_]m4_bpatsubst(oft_type, [[^a-zA-Z0-9_]], [_])" = "$oft_target_size" ; then
                            oft_real_type="oft_type"
@@ -40,17 +38,18 @@ AC_DEFUN([OPAL_FIND_TYPE],[
                    fi
 ])])
          AS_IF([test -z "$oft_real_type"],
-               [AS_VAR_SET(type_var, "not found")],
+               [AS_VAR_SET(type_var, "void")],
                [AS_VAR_SET(type_var, "$oft_real_type")])])
 
-    AS_VAR_IF(type_var, ["not found"],
-          [AC_MSG_WARN([*** Did not find corresponding C type])
-           AS_IF([test "$oft_abort_on_fail" != "no"],
-                 [AC_MSG_ERROR([Cannot continue])])])
+    AS_VAR_IF(type_var, ["void"],
+          [AC_MSG_WARN([*** Did not find corresponding C type])])
 
-    AS_VAR_IF(type_var, ["not found"], [$5=], [AS_VAR_COPY([$5], [type_var])])
+    AC_DEFINE_UNQUOTED([fortran_]m4_translit(m4_bpatsubst(m4_bpatsubst([$1], [*], []), [[^a-zA-Z0-9_]], [_]), [A-Z], [a-z])[_t],
+                       [AS_VAR_GET(type_var)], 
+                       [C type corresponding to Fortran $1])
 
-    unset oft_real_type oft_target_size
+    unset oft_real_type
 
+    AS_VAR_POPDEF([size_var])dnl
     AS_VAR_POPDEF([type_var])dnl
 ])dnl
