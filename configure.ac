@@ -340,7 +340,7 @@ AC_SEARCH_LIBS([ceil], [m], [], AC_MSG_ERROR([unable to find ceil() function]))
 
 dnl check for libraries
 
-OPAL_CHECK_PORTALS4([portals4],
+OMPI_CHECK_PORTALS4([portals4],
     [transport_portals4="yes"],
     [transport_portals4="no"])
 
