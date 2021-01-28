@@ -44,7 +44,10 @@ AS_IF([test "$opal_cv___attribute__deprecated" = 1],
       [SHMEM_AC_HAVE_ATTRIBUTE_DEPRECATED=0])
 AC_SUBST(SHMEM_AC_HAVE_ATTRIBUTE_DEPRECATED)
 
+OPAL_CONFIGURE_SETUP
+OMPI_PMIX_ADD_ARGS
 OPAL_CHECK_PMIX
+OPAL_CONFIG_PMIX
 
 AC_ARG_ENABLE([picky],
     [AC_HELP_STRING([--enable-picky],
@@ -880,7 +883,7 @@ AC_CONFIG_FILES([Makefile
 
 AC_OUTPUT
 
-AS_IF([test "$enable_pmi_mpi" != "yes" -a "$enable_pmi_simple" != "yes" -a "$opal_external_pmix_version_found" != 1 -a "$ompi_check_pmi_happy" != "yes" -a -z "$pmi_type"],
+AS_IF([test "$enable_pmi_mpi" != "yes" -a "$enable_pmi_simple" != "yes" -a "$opal_pmix_mode" != "external" -a "$ompi_check_pmi_happy" != "yes" -a -z "$pmi_type"],
          [AC_MSG_ERROR([No PMI client interface was configured, consider --enable-pmi-simple or --with-pmi])])
 
 AS_IF([test -z "$num_transports"],
